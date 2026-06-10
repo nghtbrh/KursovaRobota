@@ -1,0 +1,38 @@
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+public class RepositoryMemento implements Serializable {
+    private final Map<Integer, Institution> institutions;
+    private final Map<Integer, Student> students;
+    private final Map<Integer, Teacher> teachers;
+    private final Map<Integer, Course> courses;
+
+    public RepositoryMemento(
+            Map<Integer, Institution> institutions,
+            Map<Integer, Student> students,
+            Map<Integer, Teacher> teachers,
+            Map<Integer, Course> courses
+    ) {
+        this.institutions = new HashMap<>(institutions);
+        this.students = new HashMap<>(students);
+        this.teachers = new HashMap<>(teachers);
+        this.courses = new HashMap<>(courses);
+    }
+
+    public Map<Integer, Institution> getInstitutions() {
+        return institutions;
+    }
+
+    public Map<Integer, Student> getStudents() {
+        return students;
+    }
+
+    public Map<Integer, Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public Map<Integer, Course> getCourses() {
+        return courses;
+    }
+}
