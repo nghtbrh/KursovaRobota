@@ -1,0 +1,25 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class Course extends BaseEntity {
+    private Integer teacherId;
+    private final Set<Integer> studentIds = new HashSet<>();
+
+    public Course(String name) {
+        super(name);
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacherId = teacher.getId();
+    }
+
+    public void addStudent(Student student) {
+        studentIds.add(student.getId());
+    }
+
+    @Override
+    public String getInfo() {
+        return "курс id=" + getId() + ", назва=" + getName() +
+                ", викладач=" + teacherId + ", студенти=" + studentIds;
+    }
+}
