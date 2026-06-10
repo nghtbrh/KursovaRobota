@@ -1,0 +1,50 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class Institution extends BaseEntity {
+    private final Set<Integer> studentIds = new HashSet<>();
+    private final Set<Integer> teacherIds = new HashSet<>();
+    private final Set<Integer> courseIds = new HashSet<>();
+
+    public Institution(String name) {
+        super(name);
+    }
+
+    public void addStudent(Student student) {
+        studentIds.add(student.getId());
+
+        EventManager.getInstance().notify(new SystemEvent(
+                EventType.STUDENT_ADDED_TO_INSTITUTION,
+                getName(),
+                "студент " + student.getName() + " доданий до закладу"
+        ));
+    }
+
+    public void addTeacher(Teacher teacher) {
+        teacherIds.add(teacher.getId());
+
+        EventManager.getInstance().notify(new SystemEvent(
+                EventType.TEACHER_ADDED_TO_INSTITUTION,
+                getName(),
+                "викладач " + teacher.getName() + " доданий до закладу"
+        ));
+    }
+
+    public void addCourse(Course course) {
+        courseIds.add(course.getId());
+
+        EventManager.getInstance().notify(new SystemEvent(
+                EventType.COURSE_ADDED_TO_INSTITUTION,
+                getName(),
+                "курс " + course.getName() + " доданий до закладу"
+        ));
+    }
+
+    @Override
+    public String getInfo() {
+        return "заклад id=" + getId() + ", назва=" + getName() +
+                ", студенти=" + studentIds +
+                ", викладачі=" + teacherIds +
+                ", курси=" + courseIds;
+    }
+}
