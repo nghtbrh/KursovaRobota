@@ -1,0 +1,21 @@
+public class SimpleEducationFactory implements EducationFactory {
+    @Override
+    public Institution createInstitution(String name) {
+        return new Institution(name);
+    }
+
+    @Override
+    public Student createStudent(String name) {
+        return new Student(name);
+    }
+
+    @Override
+    public Teacher createTeacher(String name) {
+        return new Teacher(name);
+    }
+
+    @Override
+    public Course createCourse(String name) {
+        return new Course(name);
+    }
+}
