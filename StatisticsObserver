@@ -1,0 +1,47 @@
+import java.util.*;
+
+public class StatisticsObserver implements Observer {
+    private static final StatisticsObserver instance = new StatisticsObserver();
+
+    private int totalEvents = 0;
+    private Map<EventType, Integer> eventCounts = new HashMap<>();
+    private List<SystemEvent> history = new ArrayList<>();
+
+    private StatisticsObserver() {
+    }
+
+    public static StatisticsObserver getInstance() {
+        return instance;
+    }
+
+    @Override
+    public void update(SystemEvent event) {
+        totalEvents++;
+        eventCounts.put(event.getType(), eventCounts.getOrDefault(event.getType(), 0) + 1);
+        history.add(event);
+    }
+
+    public StatisticsMemento createMemento() {
+        return new StatisticsMemento(totalEvents, eventCounts, history);
+    }
+
+    public void restore(StatisticsMemento memento) {
+        totalEvents = memento.getTotalEvents();
+        eventCounts = memento.getEventCounts();
+        history = memento.getHistory();
+    }
+
+    public void printStatistics() {
+        System.out.println("\n--- статистика ---");
+        System.out.println("усього подій: " + totalEvents);
+
+        for (EventType type : eventCounts.keySet()) {
+            System.out.println(type + ": " + eventCounts.get(type));
+        }
+
+        System.out.println("\n--- історія подій ---");
+        for (SystemEvent event : history) {
+            System.out.println(event);
+        }
+    }
+}
