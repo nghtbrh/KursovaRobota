@@ -1,0 +1,9 @@
+public interface EducationFactory {
+    Institution createInstitution(String name);
+
+    Student createStudent(String name);
+
+    Teacher createTeacher(String name);
+
+    Course createCourse(String name);
+}
