@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Student extends BaseEntity {
+    private final Set<Integer> courseIds = new HashSet<>();
+    private final Map<Integer, Integer> grades = new HashMap<>();
+
+    public Student(String name) {
+        super(name);
+    }
+
+    public void enrollToCourse(Course course) throws AppException {
+        if (courseIds.contains(course.getId())) {
+            throw new AppException("студент вже записаний на цей курс");
+        }
+
+        courseIds.add(course.getId());
+        course.addStudent(this);
+
+        EventManager.getInstance().notify(new SystemEvent(
+                EventType.STUDENT_ENROLLED,
+                getName(),
+                "студент записаний на курс " + course.getName()
+        ));
+    }
+
+    public void setGrade(Course course, int grade) throws AppException {
+        if (!courseIds.contains(course.getId())) {
+            throw new AppException("студент не записаний на цей курс");
+        }
+
+        grades.put(course.getId(), grade);
+
+        EventManager.getInstance().notify(new SystemEvent(
+                EventType.GRADE_ADDED,
+                getName(),
+                "отримана оцінка " + grade + " з курсу " + course.getName()
+        ));
+    }
+
+    @Override
+    public String getInfo() {
+        return "студент id=" + getId() + ", ім'я=" + getName() + ", курси=" + courseIds + ", оцінки=" + grades;
+    }
+}
