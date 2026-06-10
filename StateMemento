@@ -1,0 +1,29 @@
+import java.io.Serializable;
+
+public class StateMemento implements Serializable {
+    private final RepositoryMemento repositoryMemento;
+    private final StatisticsMemento statisticsMemento;
+    private final int nextId;
+
+    public StateMemento(
+            RepositoryMemento repositoryMemento,
+            StatisticsMemento statisticsMemento,
+            int nextId
+    ) {
+        this.repositoryMemento = repositoryMemento;
+        this.statisticsMemento = statisticsMemento;
+        this.nextId = nextId;
+    }
+
+    public RepositoryMemento getRepositoryMemento() {
+        return repositoryMemento;
+    }
+
+    public StatisticsMemento getStatisticsMemento() {
+        return statisticsMemento;
+    }
+
+    public int getNextId() {
+        return nextId;
+    }
+}
