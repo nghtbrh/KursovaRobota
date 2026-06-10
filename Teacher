@@ -1,0 +1,42 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class Teacher extends BaseEntity {
+    private final Set<Integer> courseIds = new HashSet<>();
+
+    public Teacher(String name) {
+        super(name);
+    }
+
+    public void assignToCourse(Course course) throws AppException {
+        if (courseIds.contains(course.getId())) {
+            throw new AppException("викладач вже призначений на цей курс");
+        }
+
+        courseIds.add(course.getId());
+        course.setTeacher(this);
+
+        EventManager.getInstance().notify(new SystemEvent(
+                EventType.TEACHER_ASSIGNED,
+                getName(),
+                "викладач призначений на курс " + course.getName()
+        ));
+    }
+
+    public void gradeStudent(Student student, Course course, int grade) throws AppException {
+        if (!courseIds.contains(course.getId())) {
+            throw new AppException("викладач не веде цей курс");
+        }
+
+        if (grade < 1 || grade > 100) {
+            throw new AppException("оцінка має бути від 1 до 100");
+        }
+
+        student.setGrade(course, grade);
+    }
+
+    @Override
+    public String getInfo() {
+        return "викладач id=" + getId() + ", ім'я=" + getName() + ", курси=" + courseIds;
+    }
+}
