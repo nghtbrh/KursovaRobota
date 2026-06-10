@@ -1,0 +1,145 @@
+import java.util.Scanner;
+
+public class Main {
+    private static final Scanner sc = new Scanner(System.in);
+    private static final EducationFactory factory = new SimpleEducationFactory();
+    private static final Repository repo = Repository.getInstance();
+    private static final EventManager eventManager = EventManager.getInstance();
+    private static final StatisticsObserver statistics = StatisticsObserver.getInstance();
+
+    public static void main(String[] args) {
+        eventManager.subscribe(statistics);
+
+        while (true) {
+            System.out.println("\n--- меню ---");
+            System.out.println("1 - додати заклад");
+            System.out.println("2 - додати студента");
+            System.out.println("3 - додати викладача");
+            System.out.println("4 - додати курс");
+            System.out.println("5 - зарахувати студента до закладу");
+            System.out.println("6 - прийняти викладача до закладу");
+            System.out.println("7 - додати курс до закладу");
+            System.out.println("8 - записати студента на курс");
+            System.out.println("9 - призначити викладача на курс");
+            System.out.println("10 - поставити оцінку");
+            System.out.println("11 - показати все");
+            System.out.println("12 - статистика");
+            System.out.println("13 - зберегти");
+            System.out.println("14 - відновити");
+            System.out.println("0 - вихід");
+            System.out.print("вибір: ");
+
+            try {
+                int choice = Integer.parseInt(sc.nextLine());
+
+                switch (choice) {
+                    case 1 -> addInstitution();
+                    case 2 -> addStudent();
+                    case 3 -> addTeacher();
+                    case 4 -> addCourse();
+                    case 5 -> addStudentToInstitution();
+                    case 6 -> addTeacherToInstitution();
+                    case 7 -> addCourseToInstitution();
+                    case 8 -> enrollStudentToCourse();
+                    case 9 -> assignTeacherToCourse();
+                    case 10 -> gradeStudent();
+                    case 11 -> repo.printAll();
+                    case 12 -> statistics.printStatistics();
+                    case 13 -> save();
+                    case 14 -> load();
+                    case 0 -> {
+                        System.out.println("кінець програми");
+                        return;
+                    }
+                    default -> System.out.println("невірний пункт");
+                }
+            } catch (Exception e) {
+                System.out.println("помилка: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void addInstitution() {
+        System.out.print("назва закладу: ");
+        Institution i = factory.createInstitution(sc.nextLine());
+        repo.addInstitution(i);
+        eventManager.notify(new SystemEvent(EventType.CREATED, i.getName(), "створено навчальний заклад"));
+    }
+
+    private static void addStudent() {
+        System.out.print("ім'я студента: ");
+        Student s = factory.createStudent(sc.nextLine());
+        repo.addStudent(s);
+        eventManager.notify(new SystemEvent(EventType.CREATED, s.getName(), "створено студента"));
+    }
+
+    private static void addTeacher() {
+        System.out.print("ім'я викладача: ");
+        Teacher t = factory.createTeacher(sc.nextLine());
+        repo.addTeacher(t);
+        eventManager.notify(new SystemEvent(EventType.CREATED, t.getName(), "створено викладача"));
+    }
+
+    private static void addCourse() {
+        System.out.print("назва курсу: ");
+        Course c = factory.createCourse(sc.nextLine());
+        repo.addCourse(c);
+        eventManager.notify(new SystemEvent(EventType.CREATED, c.getName(), "створено курс"));
+    }
+
+    private static void addStudentToInstitution() throws AppException {
+        Institution i = repo.getInstitution(readId("id закладу: "));
+        Student s = repo.getStudent(readId("id студента: "));
+        i.addStudent(s);
+    }
+
+    private static void addTeacherToInstitution() throws AppException {
+        Institution i = repo.getInstitution(readId("id закладу: "));
+        Teacher t = repo.getTeacher(readId("id викладача: "));
+        i.addTeacher(t);
+    }
+
+    private static void addCourseToInstitution() throws AppException {
+        Institution i = repo.getInstitution(readId("id закладу: "));
+        Course c = repo.getCourse(readId("id курсу: "));
+        i.addCourse(c);
+    }
+
+    private static void enrollStudentToCourse() throws AppException {
+        Student s = repo.getStudent(readId("id студента: "));
+        Course c = repo.getCourse(readId("id курсу: "));
+        s.enrollToCourse(c);
+    }
+
+    private static void assignTeacherToCourse() throws AppException {
+        Teacher t = repo.getTeacher(readId("id викладача: "));
+        Course c = repo.getCourse(readId("id курсу: "));
+        t.assignToCourse(c);
+    }
+
+    private static void gradeStudent() throws AppException {
+        Teacher t = repo.getTeacher(readId("id викладача: "));
+        Student s = repo.getStudent(readId("id студента: "));
+        Course c = repo.getCourse(readId("id курсу: "));
+        System.out.print("оцінка: ");
+        int grade = Integer.parseInt(sc.nextLine());
+        t.gradeStudent(s, c, grade);
+    }
+
+    private static void save() throws Exception {
+        System.out.print("файл: ");
+        StateCaretaker.save(sc.nextLine());
+        System.out.println("збережено");
+    }
+
+    private static void load() throws Exception {
+        System.out.print("файл: ");
+        StateCaretaker.load(sc.nextLine());
+        System.out.println("відновлено");
+    }
+
+    private static int readId(String text) {
+        System.out.print(text);
+        return Integer.parseInt(sc.nextLine());
+    }
+}
