@@ -1,0 +1,28 @@
+import java.io.*;
+
+public class StateCaretaker {
+    public static void save(String fileName) throws IOException {
+        Repository repo = Repository.getInstance();
+        StatisticsObserver stats = StatisticsObserver.getInstance();
+
+        StateMemento state = new StateMemento(
+                repo.createMemento(),
+                stats.createMemento(),
+                repo.getMaxId() + 1
+        );
+
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
+        out.writeObject(state);
+        out.close();
+    }
+
+    public static void load(String fileName) throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+        StateMemento state = (StateMemento) in.readObject();
+        in.close();
+
+        Repository.getInstance().restore(state.getRepositoryMemento());
+        StatisticsObserver.getInstance().restore(state.getStatisticsMemento());
+        BaseEntity.setNextId(state.getNextId());
+    }
+}
