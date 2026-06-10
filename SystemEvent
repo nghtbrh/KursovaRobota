@@ -1,0 +1,25 @@
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+public class SystemEvent implements Serializable {
+    private final EventType type;
+    private final String source;
+    private final String description;
+    private final LocalDateTime time;
+
+    public SystemEvent(EventType type, String source, String description) {
+        this.type = type;
+        this.source = source;
+        this.description = description;
+        this.time = LocalDateTime.now();
+    }
+
+    public EventType getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + time + "] " + type + " | " + source + " | " + description;
+    }
+}
