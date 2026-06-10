@@ -1,0 +1,89 @@
+import java.util.*;
+
+public class Repository {
+    private static final Repository instance = new Repository();
+
+    private Map<Integer, Institution> institutions = new HashMap<>();
+    private Map<Integer, Student> students = new HashMap<>();
+    private Map<Integer, Teacher> teachers = new HashMap<>();
+    private Map<Integer, Course> courses = new HashMap<>();
+
+    private Repository() {
+    }
+
+    public static Repository getInstance() {
+        return instance;
+    }
+
+    public void addInstitution(Institution institution) {
+        institutions.put(institution.getId(), institution);
+    }
+
+    public void addStudent(Student student) {
+        students.put(student.getId(), student);
+    }
+
+    public void addTeacher(Teacher teacher) {
+        teachers.put(teacher.getId(), teacher);
+    }
+
+    public void addCourse(Course course) {
+        courses.put(course.getId(), course);
+    }
+
+    public Institution getInstitution(int id) throws AppException {
+        if (!institutions.containsKey(id)) throw new AppException("заклад не знайдено");
+        return institutions.get(id);
+    }
+
+    public Student getStudent(int id) throws AppException {
+        if (!students.containsKey(id)) throw new AppException("студента не знайдено");
+        return students.get(id);
+    }
+
+    public Teacher getTeacher(int id) throws AppException {
+        if (!teachers.containsKey(id)) throw new AppException("викладача не знайдено");
+        return teachers.get(id);
+    }
+
+    public Course getCourse(int id) throws AppException {
+        if (!courses.containsKey(id)) throw new AppException("курс не знайдено");
+        return courses.get(id);
+    }
+
+    public RepositoryMemento createMemento() {
+        return new RepositoryMemento(institutions, students, teachers, courses);
+    }
+
+    public void restore(RepositoryMemento memento) {
+        institutions = memento.getInstitutions();
+        students = memento.getStudents();
+        teachers = memento.getTeachers();
+        courses = memento.getCourses();
+    }
+
+    public int getMaxId() {
+        int max = 0;
+
+        for (int id : institutions.keySet()) max = Math.max(max, id);
+        for (int id : students.keySet()) max = Math.max(max, id);
+        for (int id : teachers.keySet()) max = Math.max(max, id);
+        for (int id : courses.keySet()) max = Math.max(max, id);
+
+        return max;
+    }
+
+    public void printAll() {
+        System.out.println("\n--- заклади ---");
+        institutions.values().forEach(i -> System.out.println(i.getInfo()));
+
+        System.out.println("\n--- студенти ---");
+        students.values().forEach(s -> System.out.println(s.getInfo()));
+
+        System.out.println("\n--- викладачі ---");
+        teachers.values().forEach(t -> System.out.println(t.getInfo()));
+
+        System.out.println("\n--- курси ---");
+        courses.values().forEach(c -> System.out.println(c.getInfo()));
+    }
+}
