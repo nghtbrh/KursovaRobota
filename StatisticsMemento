@@ -1,0 +1,30 @@
+import java.io.Serializable;
+import java.util.*;
+
+public class StatisticsMemento implements Serializable {
+    private final int totalEvents;
+    private final Map<EventType, Integer> eventCounts;
+    private final List<SystemEvent> history;
+
+    public StatisticsMemento(
+            int totalEvents,
+            Map<EventType, Integer> eventCounts,
+            List<SystemEvent> history
+    ) {
+        this.totalEvents = totalEvents;
+        this.eventCounts = new HashMap<>(eventCounts);
+        this.history = new ArrayList<>(history);
+    }
+
+    public int getTotalEvents() {
+        return totalEvents;
+    }
+
+    public Map<EventType, Integer> getEventCounts() {
+        return eventCounts;
+    }
+
+    public List<SystemEvent> getHistory() {
+        return history;
+    }
+}
